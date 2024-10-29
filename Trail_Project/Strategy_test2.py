@@ -38,6 +38,16 @@ class AsthmaRiskStrategy(RiskStrategy):
             return "Low risk."
         return "Moderate risk due to age."
 
+#Added by Chetan Chhetri ___ the calculation for heart attack risk   
+class HeartAttackRisk(RiskStrategy):
+    def __init__(self,diabetes_cal):
+        self.diabetes_cal=diabetes_cal
+    def calculate_risk(self, patient):
+        d_risk=self.diabetes_cal.calculate_risk(patient)
+        if patient.age > 20  and d_risk=="High risk for complications.":
+            return "Prone to heart attack"
+        return super().calculate_risk(patient)
+
 
 # HospitalRecords class to manage the records of patients and calculate their risks
 class HospitalRecords:
@@ -55,6 +65,8 @@ class HospitalRecords:
             strategy = HypertensionRiskStrategy()
         elif patient.disease == "Asthma":
             strategy = AsthmaRiskStrategy()
+        elif patient.disease=="Heart Attack":
+            strategy= HeartAttackRisk(DiabetesRiskStrategy())
         else:
             return "Risk calculation not available for this disease."
 
@@ -76,6 +88,7 @@ if __name__ == "__main__":
     hospital_records.add_patient("Charlie", 35, "Hypertension")
     hospital_records.add_patient("David", 50, "Asthma")
     hospital_records.add_patient("Eva", 29, "Diabetes")
+    hospital_records.add_patient("Helen", 65, "Heart Attack")
 
     # Displaying all patient records with risk assessments
     print("Patient Records and Risk Assessments:")
